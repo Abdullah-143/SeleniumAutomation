@@ -1,12 +1,17 @@
 package org.qpros.testbase;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.qpros.utility.ExtentReportManager;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.io.FileInputStream;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 public class TestBase {
@@ -14,6 +19,7 @@ public class TestBase {
     String websiteUrl = null;
     public static Properties prop = new Properties();
     private String configFilePath = System.getProperty("user.dir") + "/src/main/resources/config.properties";
+    public static ExtentReports extent;
 
     public WebDriver getDriver() {
         return driver.get();
@@ -29,9 +35,17 @@ public class TestBase {
         }
     }
 
+    @BeforeSuite
+    public void setupSuite() {
+        // Initialize ExtentReports
+        extent = ExtentReportManager.getInstance();
+    }
+
     @Parameters("browser")
     @BeforeMethod(enabled = true)
-    public void initialSetUp(@Optional("firefox") String browser) {
+    public void initialSetUp(@Optional("firefox") String browser, Method method) {
+        ExtentTest test = extent.createTest(method.getName());
+        ExtentReportManager.setTest(test);
         try {
             launchBrowser(browser);
             websiteUrl = prop.getProperty("website_url");
@@ -39,6 +53,7 @@ public class TestBase {
         } catch (Exception e) {
             System.out.println("Exception caught while reading properties from config file " + e.getMessage());
         }
+
     }
 
     /**
@@ -62,9 +77,25 @@ public class TestBase {
     }
 
     @AfterMethod
-    public void tearDown() {
+    public void tearDown(ITestResult result) {
+        ExtentTest test = ExtentReportManager.getTest();
+
+        if (result.getStatus() == ITestResult.SUCCESS) {
+            test.pass("Test Passed");
+        } else if (result.getStatus() == ITestResult.FAILURE) {
+            test.fail(result.getThrowable());
+        } else if (result.getStatus() == ITestResult.SKIP) {
+            test.skip("Test Skipped");
+        }
+
+        ExtentReportManager.removeTest();
         getDriver().quit();
         driver.remove();
+    }
+
+    @AfterSuite
+    public void tearDownSuite() {
+        extent.flush();
     }
 
 }
