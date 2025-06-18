@@ -1,26 +1,6 @@
 # Selenium Automation Framework
 
-This is a scalable Selenium Test Automation Framework built with Java, TestNG, Maven, and WebDriverManager. It supports parallel cross-browser execution with Chrome and Firefox and follows a clean Page Object Model design.
-
----
-
-## 📁 Project Structure
-
-```
-SeleniumAutomationTest/
-├── pom.xml
-├── testNG.xml
-├── src/
-│   ├── main/
-│   │   ├── java/org/qpros/
-│   │   │   ├── pages/             # Page classes
-│   │   │   ├── testbase/          # Base test class
-│   │   │   └── utility/           # Utility files
-│   │   └── resources/testdata/    # Property files
-│   └── test/
-│       └── java/tests/            # Test classes
-└── target/                        # TestNG reports generated here
-```
+This is a scalable Selenium Test Automation Framework built with Java, TestNG, Maven, and WebDriverManager. It supports parallel cross-browser execution with Chrome and Firefox and follows a clean Page Object Model design
 
 ---
 
@@ -86,19 +66,11 @@ Right-click `testNG.xml` → **Run 'testNG.xml'**
 
 ## 📄 Reports
 
-After execution, reports are available in the `target/surefire-reports/` directory.
+After execution, reports are available in the `/reports` directory.
 
 Check the following files:
 
-- `index.html`
-- `emailable-report.html`
-- `testng-results.xml`
-
-To open HTML report:
-
-```bash
-open target/surefire-reports/emailable-report.html
-```
+- `extent-report.html`
 
 ---
 
